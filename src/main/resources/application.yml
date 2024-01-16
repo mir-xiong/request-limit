@@ -1,7 +1,8 @@
 request-limit:
+  # 令牌桶限流策略相关配置
   token-bucket-config:
-    # ????????
+    # 令牌生成速率单位S, 即每秒生成多少令牌
     limit-qps: 5
-    # ????????
+    # 最大令牌数
     max-tokens: 10
 

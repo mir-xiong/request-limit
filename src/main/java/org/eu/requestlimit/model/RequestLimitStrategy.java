@@ -10,4 +10,6 @@ public enum RequestLimitStrategy {
     TOKEN_BUCKET,
     LEAKY_BUCKET,
     ;
+
+    public static final RequestLimitStrategy DEFAULT_STRATEGY = TOKEN_BUCKET;
 }

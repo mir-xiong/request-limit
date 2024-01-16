@@ -9,4 +9,6 @@ public enum ImplMode {
     INTERCEPTOR,
     ASPECT,
     ;
+
+    public static final ImplMode DEFAULT_MODE = ASPECT;
 }

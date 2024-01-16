@@ -7,7 +7,6 @@ import org.eu.requestlimit.model.ImplMode;
 import org.eu.requestlimit.model.RequestLimitStrategy;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +35,9 @@ public class RequestLimitConfigurationSelector implements ImportSelector {
         var mode = (ImplMode) annotationAttributes.get("mode");
 
         /**
-         * 当yaml文件配置的模式
+         * 优先使用yaml文件配置的限流模式
          */
-        if (!Objects.equals(requestLimitConfig.getMode(), ImplMode.ASPECT) &&
-                !Objects.equals(requestLimitConfig.getMode(), mode)) {
+        if (!Objects.equals(requestLimitConfig.getMode(), ImplMode.DEFAULT_MODE)) {
             mode = requestLimitConfig.getMode();
         }
 
@@ -49,6 +47,14 @@ public class RequestLimitConfigurationSelector implements ImportSelector {
         }
 
         var strategy = (RequestLimitStrategy) annotationAttributes.get("strategy");
+
+        /**
+         * 优先使用yaml文件配置的限流策略（当yml文件配置默认限流策略或者未配置限流策略,则使用注解@EnableRequestLimit 配置的限流策略）
+         */
+        if (!Objects.equals(requestLimitConfig.getStrategy(), RequestLimitStrategy.DEFAULT_STRATEGY)) {
+            strategy = requestLimitConfig.getStrategy();
+        }
+
         switch (strategy) {
             case TOKEN_BUCKET -> needDIBeans.add(TokenBucketLimiter.class.getName());
             default -> throw new RuntimeException(String.format("暂不支持[%s]限流策略", strategy));
